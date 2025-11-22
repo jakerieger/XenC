@@ -7,8 +7,8 @@
 
 #include "renderer.h"
 
-xWindow* gWindow;
-xRenderer* gRenderer;
+static xWindow* gWindow     = NULL;
+static xRenderer* gRenderer = NULL;
 
 static void onResize(GLFWwindow* window, int width, int height) {
     X_UNUSED(window);
