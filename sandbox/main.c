@@ -5,11 +5,18 @@
 #include <window.h>
 #include <stdbool.h>
 
-static void on_resize(GLFWwindow* window, int width, int height) {
-    // do some stuff
+#include "renderer.h"
+
+xWindow* gWindow;
+xRenderer* gRenderer;
+
+static void onResize(GLFWwindow* window, int width, int height) {
+    X_UNUSED(window);
+    if (gRenderer) { xRendererResize(gRenderer, width, height); }
+    if (gWindow) { xWindowSetDimensions(gWindow, width, height); }
 }
 
-static void on_key(GLFWwindow* window, int key, int scancode, int action, int mods) {
+static void onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) { glfwSetWindowShouldClose(window, GLFW_TRUE); }
 }
 
@@ -20,19 +27,28 @@ int main(void) {
     window_info.height    = 600;
     window_info.resizable = true;
 
-    xWindow* window = xWindowCreate(&window_info);
-    X_ASSERT_MSG(window != NULL, "Window creation returned null ptr");
+    gWindow = xWindowCreate(&window_info);
+    X_ASSERT_MSG(gWindow != NULL, "Window creation returned null ptr");
 
-    xWindowSetDimensions(window, 1280, 720);
-    xWindowSetResizeCallback(window, on_resize);
-    xWindowSetKeyCallback(window, on_key);
+    xWindowSetDimensions(gWindow, 1280, 720);
+    xWindowSetResizeCallback(gWindow, onResize);
+    xWindowSetKeyCallback(gWindow, onKey);
 
-    while (!glfwWindowShouldClose(window->handle)) {
+    gRenderer = xRendererCreate();
+    xRendererInitialize(gRenderer, gWindow->width, gWindow->height);
+
+    while (!glfwWindowShouldClose(gWindow->handle)) {
+        xRendererFrameBegin(gRenderer);
+        // Render stuff
+        xRendererFrameEnd(gRenderer);
+
         glfwPollEvents();
-        glfwSwapBuffers(window->handle);
+        glfwSwapBuffers(gWindow->handle);
     }
 
-    xWindowDestroy(window);
+    xRendererShutdown(gRenderer);
+    xRendererDestroy(gRenderer);
+    xWindowDestroy(gWindow);
 
     return 0;
 }
