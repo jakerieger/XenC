@@ -15,17 +15,17 @@
 #include <assert.h>
 #include <stdio.h>
 
-static void cleanup(Window* window) {
+static void cleanup(xWindow* window) {
     X_FREE(window->title);
     X_FREE(window);
 }
 
-Window* window_create(const WindowInfo* info) {
+xWindow* xWindowCreate(const xWindowInfo* info) {
     X_ASSERT_MSG(info != NULL, "info is NULL");
     X_ASSERT_MSG(info->width > 0, "width <= 0");
     X_ASSERT_MSG(info->height > 0, "height <= 0");
 
-    Window* window = X_MALLOC(Window, sizeof(Window));
+    xWindow* window = X_MALLOC(xWindow, sizeof(xWindow));
     if (window == NULL) {
         X_PRINT_ERROR("Failed to allocate window struct memory\n");
         return NULL;
@@ -73,13 +73,13 @@ Window* window_create(const WindowInfo* info) {
     return window;
 }
 
-void window_destroy(Window* window) {
+void xWindowDestroy(xWindow* window) {
     glfwDestroyWindow(window->handle);
     glfwTerminate();
     cleanup(window);
 }
 
-bool window_set_title(Window* window, const char* title) {
+bool xWindowSetTitle(xWindow* window, const char* title) {
     glfwSetWindowTitle(window->handle, title);
     X_FREE(window->title);
     window->title = X_MALLOC(char, strlen(title) + 1);
@@ -91,46 +91,46 @@ bool window_set_title(Window* window, const char* title) {
     return true;
 }
 
-bool window_set_width(Window* window, u32 width) {
+bool xWindowSetWidth(xWindow* window, u32 width) {
     window->width = width;
     glfwSetWindowSize(window->handle, window->width, window->height);
     return true;
 }
 
-bool window_set_height(Window* window, u32 height) {
+bool xWindowSetHeight(xWindow* window, u32 height) {
     window->height = height;
     glfwSetWindowSize(window->handle, window->width, window->height);
     return true;
 }
 
-bool window_set_dimensions(Window* window, u32 width, u32 height) {
+bool xWindowSetDimensions(xWindow* window, u32 width, u32 height) {
     window->width  = width;
     window->height = height;
     glfwSetWindowSize(window->handle, window->width, window->height);
     return true;
 }
 
-bool window_set_key_callback(const Window* window, window_key_callback callback) {
+bool xWindowSetKeyCallback(const xWindow* window, xWindowKeyCallback callback) {
     glfwSetKeyCallback(window->handle, callback);
     return true;
 }
 
-bool window_set_mouse_callback(const Window* window, window_mouse_callback callback) {
+bool xWindowSetMouseCallback(const xWindow* window, xWindowMouseCallback callback) {
     glfwSetMouseButtonCallback(window->handle, callback);
     return true;
 }
 
-bool window_set_mouse_scroll_callback(const Window* window, window_mouse_scroll_callback callback) {
+bool xWindowSetMouseScrollCallback(const xWindow* window, xWindowMouseScrollCallback callback) {
     glfwSetScrollCallback(window->handle, callback);
     return true;
 }
 
-bool window_set_resize_callback(const Window* window, window_resize_callback callback) {
+bool xWindowSetResizeCallback(const xWindow* window, xWindowResizeCallback callback) {
     glfwSetWindowSizeCallback(window->handle, callback);
     return true;
 }
 
-bool window_set_cursor_position_callback(const Window* window, window_cursor_position_callback callback) {
+bool xWindowSetCursorPositionCallback(const xWindow* window, xWindowCursorPositionCallback callback) {
     glfwSetCursorPosCallback(window->handle, callback);
     return true;
 }

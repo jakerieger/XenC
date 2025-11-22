@@ -14,25 +14,25 @@ static void on_key(GLFWwindow* window, int key, int scancode, int action, int mo
 }
 
 int main(void) {
-    WindowInfo window_info;
+    xWindowInfo window_info;
     window_info.title     = "XenC Window";
     window_info.width     = 800;
     window_info.height    = 600;
     window_info.resizable = true;
 
-    Window* window = window_create(&window_info);
+    xWindow* window = xWindowCreate(&window_info);
     X_ASSERT_MSG(window != NULL, "Window creation returned null ptr");
 
-    window_set_dimensions(window, 1280, 720);
-    window_set_resize_callback(window, on_resize);
-    window_set_key_callback(window, on_key);
+    xWindowSetDimensions(window, 1280, 720);
+    xWindowSetResizeCallback(window, on_resize);
+    xWindowSetKeyCallback(window, on_key);
 
     while (!glfwWindowShouldClose(window->handle)) {
         glfwPollEvents();
         glfwSwapBuffers(window->handle);
     }
 
-    window_destroy(window);
+    xWindowDestroy(window);
 
     return 0;
 }
